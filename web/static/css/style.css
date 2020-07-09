@@ -1,0 +1,71 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap");
+* {
+  padding: 0;
+  margin: 0;
+  font-family: "Montssrrat", sans-serif;
+  box-sizing: border-box;
+}
+a {
+  text-decoration: none;
+  color: black;
+  cursor:pointer;
+  font-family: "Montssrrat", sans-serif;
+}
+.top-bar {
+  padding: 0 5%;
+  background-color: teal;
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  text-align: center;
+  align-items: center;
+}
+.logo-side a {
+  color: #f4f4f4;
+  letter-spacing: 1.8px;
+}
+.logo-side {
+  width: 40%;
+  text-align: center;
+}
+.logo-side ul {
+  display: flex;
+  list-style: none;
+  align-items: center;
+}
+.logo-side ul li {
+  padding: 10px 10px;
+}
+.cart-side ul {
+  display: flex;
+  list-style: none;
+  align-items: center;
+}
+.cart-side ul li {
+  padding: 10px 10px;
+}
+.btn {
+  padding: 8px 15px;
+  border-radius: 10px;
+}
+.bg-light {
+  background-color: #f5f5f5;
+  color: #333;
+}
+.cart-icon {
+  color: #ffd740;
+}
+.txt-primary {
+  color: #ffd740;
+}
+.cart-total {
+  font-size: 1.1rem;
+  padding: 0 5px;
+  display: inline;
+  color: #fff;
+  background-color: red;
+  border-radius: 50%;
+  position: absolute;
+  margin-left: -10px;
+  /* margin-top: -5px; */
+}

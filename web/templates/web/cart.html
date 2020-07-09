@@ -1,0 +1,47 @@
+{% extends 'web/basic.html'%}
+{% load static%}
+{% block details%}
+<title>This is cart</title>
+<link rel="stylesheet" href="{% static 'css/cart_style.css' %}">
+{% endblock details%}
+{% block content%}
+    <div class="pricing  bg-light section-padding">
+        <div class="upper">
+            <a href="{% url 'home' %}" class="btn bg-light-border hover-to-dark"><i class="fas fa-arrow-left"></i> Continue Shopping</a>
+        </div>
+        <div class="lower">
+            <ul>
+                <li><strong>Items</strong>:{{ order.get_cart_items }}</li>
+                <li><strong>Total</strong>:${{ order.get_cart_total|floatformat:2 }}</li>
+                <li><a href="{% url 'checkout' %}" class="btn btn-success success-hover">Checkout</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="pricing  bg-light section-padding">
+        <div class="row">
+            <div class="col-1"><strong>Image</strong></div>
+            <div class="col-2"><strong>Item</strong></div>
+            <div class="col-3"><strong>Price</strong></div>
+            <div class="col-4"><strong>Quantity</strong></div>
+            <div class="col-4"><strong>Total</strong></div>
+        </div>
+        {% for item in items  %}
+            
+        <div class="row">
+            <div class="col-1 col-center"><img src="/media/{{ item.product.image }}" alt=""></div>
+            <div class="col-2 col-center">{{ item.product.name }}</div>
+            <div class="col-3 col-center">{{ item.product.price|floatformat:2 }}</div>
+            <div class="col-4 col-center">
+                <div class="up-down">
+                    <p><strong>{{ item.quantity }}</strong></p>
+                    <div class="quantity">
+                        <img data-product="{{ item.product.id }}" data-action="add" class="update-cart" src="{% static 'images/up-arrow.png' %}" alt="">
+                        <img data-product="{{ item.product.id }}" data-action="remove" src="{% static 'images/down-arrow.png' %}" alt="" class="update-cart">
+                    </div>
+                </div>
+            </div>
+            <div class="col-4 col-center">${{ item.get_total|floatformat:2 }}</div>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock content%}

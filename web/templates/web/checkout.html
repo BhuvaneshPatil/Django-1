@@ -1,0 +1,156 @@
+{% extends 'web/basic.html' %}
+{% load static%}
+{% block details%}
+<title>Grab Your Products</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+<link rel="stylesheet" href="{% static 'css/checkout-style.css' %}">
+{% endblock details%}
+{% block content%}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="box-element" id="form-wrapper">
+                <form id="form">
+                    <div id="user-info">
+                        <div class="form-field">
+                            <input class="form-control" type="text" name="name"placeholder="Name..">
+                        </div>
+                        <div class="form-field">
+                            <input class="form-control" type="email"
+                            name="email" placeholder="Email..">
+                        </div>
+                    </div>
+                    <div id="shipping-info">
+                        <hr>
+                        <p>Shipping Info : </p>
+                        <hr>
+                        <div class="form-field">
+                            <input class="form-control" type="text" name="Address" placeholder="Address..">
+                        </div>
+                        <div class="form-field">
+                            <input class="form-control" type="text" name="City" placeholder="City..">
+                        </div>
+                        <div class="form-field">
+                            <input class="form-control" type="text" name="State" placeholder="State..">
+                        </div>
+                        <div class="form-field">
+                            <input class="form-control" type="text" name="zip" placeholder="Zip Code..">
+                        </div>
+                    </div>
+                    <input id="from-button" type="submit" value="Proceed" class="btn btn-success success-hover">
+                </form>
+            </div>
+            <div class="box-element d-none" id="pay">
+                <small>Payment Options</small>
+                <button class="btn btn-primary" id="pay-button">Pay</button>
+            </div>
+        </div>
+
+        <div class="col-lg-6 fix-height">
+            <div class="box-element">
+                <div class="row">
+                    <a href="{% url 'cart' %}" class="btn btn-outline-dark ml-2"><i class="fas fa-arrow-left"></i>Back to Cart</a>
+                </div>
+                <hr>
+                <h3>Order Summary</h3>
+                <hr>
+                <div class="pro">
+                    {% for item in items %}
+                        
+                    <div class="show">
+                        <div class="image col-center"><img src="/media/{{ item.product.image }}" alt=""></div>
+                        <div class="name col-center">{{ item.product.name }}</div>
+                        <div class="price col-center">${{ item.product.price|floatformat:2 }}</div>
+                        <div class="quantity col-center">x{{ item.quantity }}</div>
+                    </div>
+                    <hr>
+                    {% endfor %}
+                </div>
+                <br>
+                <br>
+                <h5>Items : {{ order.get_cart_items }}</h5>
+                <h5>Price : ${{ order.get_cart_total|floatformat:2 }}</h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type='text/javascript'>
+    var shipping='{{ order.shipping }}'
+    var total='{{ order.get_cart_total}}'
+
+    if (shipping=='False'){
+        document.getElementById('shipping-info').innerHTML=''
+    }
+
+    var form=document.getElementById('form')
+    form.addEventListener('submit',function(e){
+        e.preventDefault()
+        document.getElementById('from-button').classList.add('d-none')
+        document.getElementById('pay').classList.remove('d-none')
+    })
+    
+    document.getElementById('pay-button').addEventListener('click',function(){
+        console.log("Payment Button Clicked");
+    })
+    
+    if (user!= 'AnonymousUser'){
+        document.getElementById('user-info').classList.add('d-none')
+    }
+    
+    if (shipping=='False' && user!= 'AnonymousUser'){
+        document.getElementById('form-wrapper').classList.add('d-none')
+        document.getElementById('pay').classList.remove('d-none')
+    }
+
+    document.getElementById('pay-button').addEventListener('click',submitFormData)
+    function submitFormData(){
+        console.log('Payment Button Clicked')
+
+        var userFormData = {
+            'name':null,
+            'email':null,
+            'total':total,
+        }
+        var shippingFormData = {
+            'state':null,
+            'address':null,
+            'city':null,
+            'zip':null,
+        }
+        if(shipping != 'False'){
+            shippingFormData.state=form.State.value,
+            shippingFormData.address=form.Address.value,
+            shippingFormData.city=form.City.value,
+            shippingFormData.zip=form.zip.value
+        }
+        if(shipping != 'False' && user!= 'AnonymousUser'){
+            shippingFormData.state=form.State.value,
+            shippingFormData.address=form.Address.value,
+            shippingFormData.city=form.City.value,
+            shippingFormData.zip=form.zip.value,
+            userFormData.name=form.name.value
+            userFormData.email=form.email.value
+        }
+    console.log(userFormData)
+    var url='/process-order/'
+
+    fetch(url,{
+        method:'POST',
+        headers:{
+            'Content-Type':'apllication/json',
+            'X-CSRFToken':csrftoken
+        },
+        body:JSON.stringify({'form':userFormData,'shipping':shippingFormData})
+    })
+    .then(response=> response.json())
+    .then(data=>{
+        console.log("Success",data);
+        alert('Transaction Completed');
+        window.location.href="{% url 'home'%}";
+    })
+}
+</script>
+{% endblock content%}
